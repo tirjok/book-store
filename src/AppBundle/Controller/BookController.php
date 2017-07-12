@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Book;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -32,6 +33,18 @@ class BookController extends Controller
      */
     public function storeAction(Request $request)
     {
+        $serializer = $this->get('serializer');
+        $book = new Book();
+        $validator = $this->get('validator');
+        $errors = $validator->validate($book);
+
+        if (count($errors) > 0) {
+            return new JsonResponse([
+                'success' => false,
+                'errors' => $serializer->serialize($errors, 'json')
+            ]);
+        }
+
         return new JsonResponse([
             'success' => 'true',
             'data' => 'Test'
