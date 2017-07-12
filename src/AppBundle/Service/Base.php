@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use JMS\Serializer\Serializer as JMS;
 
 class Base
 {
@@ -30,7 +31,7 @@ class Base
     protected function getSerializer()
     {
         if($this->serializer == null) {
-            $this->serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+            $this->serializer = JMS::create()->build();
         }
 
         return $this->serializer;

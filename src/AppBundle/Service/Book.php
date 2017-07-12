@@ -9,6 +9,19 @@ use AppBundle\Entity\Book as BookEntity;
 
 class Book extends Base
 {
+    /**
+     * @return array
+     */
+    public function all()
+    {
+        try {
+            return $this->getDoctrine()
+                ->getRepository(BookEntity::class)
+                ->fidAll();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
     public function getBookById($bookId)
     {
         try {

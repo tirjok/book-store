@@ -6,9 +6,38 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class BookController extends Controller
 {
+    /**
+     * @Route("/books",name="books")
+     * @Method("GET")
+     */
+    public function indexAction()
+    {
+        $serializer = $this->get('serializer');
+        $bookService = $this->container->get('restapi.book');
+        $books = $bookService->all();
+
+        return new JsonResponse ([
+            'success' => true,
+            'data' => $serializer->serialize($books, 'json')
+        ]);
+    }
+
+    /**
+     * @Route("/books",name="books.store")
+     * @Method("POST")
+     */
+    public function storeAction(Request $request)
+    {
+        return new JsonResponse([
+            'success' => 'true',
+            'data' => 'Test'
+        ]);
+    }
+
     /**
      * @Route("/book/{id}",
      *          name="book_single",
