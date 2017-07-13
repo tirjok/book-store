@@ -3,13 +3,15 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
+use AppBundle\Form\BookType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class BookController extends Controller
+class BookController extends BaseController
 {
     /**
      * @Route("/books",name="books")
@@ -28,27 +30,42 @@ class BookController extends Controller
     }
 
     /**
-     * @Route("/books",name="books.store")
+     * @Route("/api/books",name="books.store")
      * @Method("POST")
      */
     public function storeAction(Request $request)
     {
-        $serializer = $this->get('serializer');
         $book = new Book();
-        $validator = $this->get('validator');
-        $errors = $validator->validate($book);
+        $form = $this->createForm(new BookType(), $book);
+        $this->processForm($request, $form);
 
-        if (count($errors) > 0) {
-            return new JsonResponse([
-                'success' => false,
-                'errors' => $serializer->serialize($errors, 'json')
-            ]);
+        if (!$form->isValid()) {
+            header('Content-Type: cli');
+            dump((string) $form->getErrors(true, false));die;
         }
 
-        return new JsonResponse([
-            'success' => 'true',
-            'data' => 'Test'
-        ]);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($book);
+        $em->flush();
+
+        $response = $this->createApiResponse($book, 201);
+
+        $bookUrl = $this->generateUrl(
+            'api_books_show',
+            ['id' => $book->getId()]
+        );
+        $response->headers->set('Location', $bookUrl);
+
+        return $response;
+    }
+
+    /**
+     * @Route("/api/books/{id}",name="api_books_show")
+     * @Method("GET")
+     */
+    public function showAction($id)
+    {
+
     }
 
     /**
@@ -87,4 +104,12 @@ class BookController extends Controller
         }
     }
 
+    private function processForm(Request $request, FormInterface $form)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $clearMissing = $request->getMethod() != 'PATCH';
+
+        $form->submit($data, $clearMissing);
+    }
 }

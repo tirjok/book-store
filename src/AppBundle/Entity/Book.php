@@ -26,7 +26,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Please enter a valid title")
      */
     private $title;
 
@@ -34,6 +34,7 @@ class Book
      * @var \DateTime
      *
      * @ORM\Column(name="publishDate", type="date", nullable=true)
+     * @Assert\NotBlank(message="Please enter a valid date")
      */
     private $publishDate;
 
