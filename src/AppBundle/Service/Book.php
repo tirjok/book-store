@@ -14,9 +14,17 @@ class Book extends Base
     public function all()
     {
         try {
-            return $this->getDoctrine()
+            $books =  $this->getDoctrine()
                 ->getRepository(BookEntity::class)
-                ->fidAll();
+                ->findAll();
+
+            $data = [];
+
+            foreach ($books as $book) {
+                $data[] = $this->bookSerializer($book);
+            }
+
+            return $data;
         } catch (\Exception $e) {
             return [];
         }
@@ -33,7 +41,7 @@ class Book extends Base
             if(empty($bookId)) {
                 throw new InvalidArgumentException ("Book id can not be empty.");
             }
-            
+
             $book = $this->getDoctrine()
                         ->getRepository(BookEntity::class)
                         ->find($bookId);
@@ -49,19 +57,6 @@ class Book extends Base
         catch (\Exception $ex) {
             throw $ex;
         }
-    }
-
-    /**
-     * @param $book
-     * @return array
-     */
-    public function persist($book)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($book);
-        $em->flush();
-
-        return $book;
     }
 
     /**

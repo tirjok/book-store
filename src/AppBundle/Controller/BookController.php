@@ -13,19 +13,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class BookController extends BaseController
 {
     /**
-     * @Route("/books",name="books")
+     * @Route("/api/books",name="api_books")
      * @Method("GET")
      */
     public function indexAction()
     {
-        $serializer = $this->get('serializer');
         $bookService = $this->container->get('restapi.book');
         $books = $bookService->all();
 
-        return new JsonResponse ([
-            'success' => true,
-            'data' => $serializer->serialize($books, 'json')
-        ]);
+        return $this->createApiResponse(['books' => $books]);
     }
 
     /**
@@ -85,7 +81,7 @@ class BookController extends BaseController
 
         $book = $bookService->persist($book);
 
-        return $this->createApiResponse($bookService->bookSerializer($book), 200);
+        return $this->createApiResponse($bookService->bookSerializer($book));
     }
 
     /**
@@ -105,6 +101,28 @@ class BookController extends BaseController
             return $this->createNotFountErrorResponse('No book found with id ' . $id);
         }
 
-        return $this->createApiResponse($bookService->bookSerializer($book), 200);
+        return $this->createApiResponse($bookService->bookSerializer($book));
+    }
+
+    /**
+     * @Route("/api/books/{id}")
+     * @Method("DELETE")
+     *
+     * @param $id
+     * @return JsonResponse
+     */
+    public function deleteAction($id)
+    {
+        $bookService = $this->container->get('restapi.book');
+
+        try {
+            $book = $bookService->find($id);
+        } catch (NotFoundHttpException $e) {
+            return $this->createNotFountErrorResponse('No book found with id ' . $id);
+        }
+
+        $bookService->remove($book);
+
+        return $this->createApiResponse([], 204);
     }
 }

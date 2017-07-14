@@ -47,4 +47,33 @@ class Base
         return $this->getSerializer()->serialize($object, 'json');
     }
 
+    /**
+     * Remove an item from storage
+     *
+     * @param $object
+     * @return mixed
+     */
+    public function remove($object)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($object);
+        return $em->flush();
+    }
+
+
+    /**
+     * Persist an item
+     *
+     * @param $object
+     * @return array
+     */
+    public function persist($object)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($object);
+        $em->flush();
+
+        return $object;
+    }
+
 }

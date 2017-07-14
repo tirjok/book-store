@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 abstract class BaseController extends Controller
 {
@@ -17,7 +18,10 @@ abstract class BaseController extends Controller
      */
     public function createApiResponse($data, $status = 200)
     {
-        return new JsonResponse($data, $status);
+        $response = new JsonResponse($data, $status);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**
@@ -81,6 +85,10 @@ abstract class BaseController extends Controller
     public function processForm(Request $request, FormInterface $form)
     {
         $data = json_decode($request->getContent(), true);
+
+        if ($data === null) {
+            throw new HttpException(400, 'Invalid JSON body!');
+        }
 
         $clearMissing = $request->getMethod() != 'PATCH';
 
