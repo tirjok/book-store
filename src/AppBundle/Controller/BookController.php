@@ -32,9 +32,12 @@ class BookController extends BaseController
     /**
      * @Route("/api/books",name="books.store")
      * @Method("POST")
+     * @param Request $request
+     * @return JsonResponse
      */
     public function storeAction(Request $request)
     {
+        $bookService = $this->container->get('restapi.book');
         $book = new Book();
         $form = $this->createForm(new BookType(), $book);
         $this->processForm($request, $form);
@@ -44,16 +47,13 @@ class BookController extends BaseController
             dump((string) $form->getErrors(true, false));die;
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($book);
-        $em->flush();
-
-        $response = $this->createApiResponse($book, 201);
-
+        $book = $bookService->create($book);
         $bookUrl = $this->generateUrl(
             'api_books_show',
             ['id' => $book->getId()]
         );
+
+        $response = $this->createApiResponse($bookService->bookSerializer($book), 201);
         $response->headers->set('Location', $bookUrl);
 
         return $response;
@@ -104,6 +104,10 @@ class BookController extends BaseController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param FormInterface $form
+     */
     private function processForm(Request $request, FormInterface $form)
     {
         $data = json_decode($request->getContent(), true);

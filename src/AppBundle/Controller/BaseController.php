@@ -6,13 +6,15 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class BaseController extends Controller
+abstract class BaseController extends Controller
 {
+    /**
+     * @param $data
+     * @param int $status
+     * @return JsonResponse
+     */
     public function createApiResponse($data, $status = 200)
     {
-        return new JsonResponse([
-            'success' => 'true',
-            'data' => json_encode($data)
-        ], $status);
+        return new JsonResponse($data, $status);
     }
 }

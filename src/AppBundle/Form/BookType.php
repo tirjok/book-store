@@ -13,9 +13,12 @@ class BookType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text')
-            ->add('publishDate', 'date')
-            ->add('isbn', 'text');
+        $builder->add('name', 'text')
+            ->add('price', 'text')
+            ->add('description', 'text')
+            ->add('isbn', 'text')
+            ->add('author_id', 'integer')
+        ;
     }
     
     /**
@@ -24,7 +27,8 @@ class BookType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Book'
+            'data_class' => 'AppBundle\Entity\Book',
+            'csrf_protection' => false
         ));
     }
 

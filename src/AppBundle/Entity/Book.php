@@ -3,7 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Book
@@ -25,25 +24,37 @@ class Book
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255)
-     * @Assert\NotBlank(message="Please enter a valid title")
+     * @ORM\Column(name="name", type="string", length=255)
      */
-    private $title;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="publishDate", type="date", nullable=true)
-     * @Assert\NotBlank(message="Please enter a valid date")
-     */
-    private $publishDate;
+    private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="isbn", type="string", length=64, unique=true)
+     * @ORM\Column(name="price", type="decimal", length=12)
+     */
+    private $price;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="isbn", type="string", length=100)
      */
     private $isbn;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="author_id", type="integer")
+     */
+    private $author_id;
 
 
     /**
@@ -57,49 +68,72 @@ class Book
     }
 
     /**
-     * Set title
+     * Set name
      *
-     * @param string $title
+     * @param string $name
      * @return Book
      */
-    public function setTitle($title)
+    public function setName($name)
     {
-        $this->title = $title;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get title
+     * Get name
      *
      * @return string 
      */
-    public function getTitle()
+    public function getName()
     {
-        return $this->title;
+        return $this->name;
     }
 
     /**
-     * Set publishDate
+     * Set price
      *
-     * @param \DateTime $publishDate
+     * @param string $price
      * @return Book
      */
-    public function setPublishDate(\DateTime $publishDate)
+    public function setPrice($price)
     {
-        $this->publishDate = $publishDate;
+        $this->price = $price;
 
         return $this;
     }
 
     /**
-     * Get publishDate
+     * Get price
      *
-     * @return \DateTime 
+     * @return string 
      */
-    public function getPublishDate()
+    public function getPrice()
     {
-        return $this->publishDate;
+        return $this->price;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Book
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -123,5 +157,28 @@ class Book
     public function getIsbn()
     {
         return $this->isbn;
+    }
+
+    /**
+     * Set author_id
+     *
+     * @param integer $authorId
+     * @return Book
+     */
+    public function setAuthorId($authorId)
+    {
+        $this->author_id = $authorId;
+
+        return $this;
+    }
+
+    /**
+     * Get author_id
+     *
+     * @return integer 
+     */
+    public function getAuthorId()
+    {
+        return $this->author_id;
     }
 }
