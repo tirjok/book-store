@@ -45,6 +45,33 @@ class Book extends Base
         }
     }
 
+    /**
+     * @param $book
+     * @return array
+     */
+    public function create($book)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($book);
+        $em->flush();
+
+        return $book;
+    }
+
+    /**
+     * @param $book
+     * @return array
+     */
+    public function bookSerializer($book)
+    {
+        return [
+            'book_id' => $book->getId(),
+            'name' => $book->getName(),
+            'price' => (float) $book->getPrice(),
+            'description' => $book->getDescription(),
+        ];
+    }
+
     public function setBook($bookData=null) {
         try {
             if(empty($bookData)) {
