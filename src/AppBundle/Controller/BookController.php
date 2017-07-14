@@ -30,7 +30,7 @@ class BookController extends BaseController
     }
 
     /**
-     * @Route("/api/books",name="books.store")
+     * @Route("/api/books",name="api_books_create")
      * @Method("POST")
      * @param Request $request
      * @return JsonResponse
@@ -43,8 +43,15 @@ class BookController extends BaseController
         $this->processForm($request, $form);
 
         if (!$form->isValid()) {
-            header('Content-Type: cli');
-            dump((string) $form->getErrors(true, false));die;
+            $errors = $this->getErrorsFromForm($form);
+
+            $data = [
+                'type' => 'validation_error',
+                'title' => 'There was a validation error',
+                'errors' => $errors
+            ];
+
+            return $this->createApiResponse($data, 400);
         }
 
         $book = $bookService->create($book);

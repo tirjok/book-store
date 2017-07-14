@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Book
@@ -25,6 +26,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Please enter a name")
      */
     private $name;
 
@@ -32,6 +34,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="price", type="decimal", length=12)
+     * @Assert\NotBlank(message="Please enter price")
      */
     private $price;
 
@@ -39,6 +42,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank(message="Please enter some description")
      */
     private $description;
 
@@ -46,6 +50,7 @@ class Book
      * @var string
      *
      * @ORM\Column(name="isbn", type="string", length=100)
+     * @Assert\NotBlank(message="Please enter a ISBN")
      */
     private $isbn;
 
@@ -53,6 +58,7 @@ class Book
      * @var int
      *
      * @ORM\Column(name="author_id", type="integer")
+     * @Assert\NotBlank(message="Please select author")
      */
     private $author_id;
 
