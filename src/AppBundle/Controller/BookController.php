@@ -4,12 +4,11 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
 use AppBundle\Form\BookType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BookController extends BaseController
 {
@@ -32,6 +31,7 @@ class BookController extends BaseController
     /**
      * @Route("/api/books",name="api_books_create")
      * @Method("POST")
+     *
      * @param Request $request
      * @return JsonResponse
      */
@@ -43,18 +43,10 @@ class BookController extends BaseController
         $this->processForm($request, $form);
 
         if (!$form->isValid()) {
-            $errors = $this->getErrorsFromForm($form);
-
-            $data = [
-                'type' => 'validation_error',
-                'title' => 'There was a validation error',
-                'errors' => $errors
-            ];
-
-            return $this->createApiResponse($data, 400);
+            return $this->createValidationErrorResponse($form);
         }
 
-        $book = $bookService->create($book);
+        $book = $bookService->persist($book);
         $bookUrl = $this->generateUrl(
             'api_books_show',
             ['id' => $book->getId()]
@@ -67,60 +59,52 @@ class BookController extends BaseController
     }
 
     /**
+     * @Route("/api/books/{id}",name="api_books_update")
+     * @Method({"PUT", "PATCH"})
+     *
+     * @param $id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateAction($id, Request $request)
+    {
+        $bookService = $this->container->get('restapi.book');
+
+        try {
+            $book = $bookService->find($id);
+        } catch (NotFoundHttpException $e) {
+            return $this->createNotFountErrorResponse('No book found with id ' . $id);
+        }
+
+        $form = $this->createForm(new BookType(), $book);
+        $this->processForm($request, $form);
+
+        if (!$form->isValid()) {
+            return $this->createValidationErrorResponse($form);
+        }
+
+        $book = $bookService->persist($book);
+
+        return $this->createApiResponse($bookService->bookSerializer($book), 200);
+    }
+
+    /**
      * @Route("/api/books/{id}",name="api_books_show")
      * @Method("GET")
+     *
+     * @param $id
+     * @return JsonResponse
      */
     public function showAction($id)
     {
+        $bookService = $this->container->get('restapi.book');
 
-    }
-
-    /**
-     * @Route("/book/{id}",
-     *          name="book_single",
-     *          defaults={"id" = 0})
-     * @Method({"GET", "PUT"})
-     */
-    public function singleBookAction($id)
-    {
         try {
-            if($this->getRequest()->isMethod("GET") ) {
-                $bookService = $this->container->get('restapi.book');
-                $book = $bookService->getBookById($id);
-                return new JsonResponse ([
-                    'success' => 'true',
-                    'data' => $bookService->serialize($book)
-                ]);
-            }
-            else if ($this->getRequest()->isMethod("PUT")) {
-                $content = $this->getRequest()->getContent();
-
-                $bookService = $this->container->get('restapi.book');
-                $book = $bookService->setBook(json_decode($content, true));
-
-                return new JsonResponse([
-                    'success' => 'true',
-                    'data' => $bookService->serialize($book)
-                ]);
-            }
-        } catch (\Exception $ex) {
-            return new JsonResponse ([
-                'success' => 'false',
-                'message' => $ex->getMessage()
-            ]);
+            $book = $bookService->find($id);
+        } catch (NotFoundHttpException $e) {
+            return $this->createNotFountErrorResponse('No book found with id ' . $id);
         }
-    }
 
-    /**
-     * @param Request $request
-     * @param FormInterface $form
-     */
-    private function processForm(Request $request, FormInterface $form)
-    {
-        $data = json_decode($request->getContent(), true);
-
-        $clearMissing = $request->getMethod() != 'PATCH';
-
-        $form->submit($data, $clearMissing);
+        return $this->createApiResponse($bookService->bookSerializer($book), 200);
     }
 }

@@ -6,6 +6,7 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class BaseController extends Controller
 {
@@ -17,6 +18,38 @@ abstract class BaseController extends Controller
     public function createApiResponse($data, $status = 200)
     {
         return new JsonResponse($data, $status);
+    }
+
+    /**
+     * @param FormInterface $form
+     * @return JsonResponse
+     */
+    public function createValidationErrorResponse(FormInterface $form)
+    {
+        $errors = $this->getErrorsFromForm($form);
+
+        $data = [
+            'type' => 'validation_error',
+            'title' => 'There was a validation error',
+            'errors' => $errors
+        ];
+
+        return $this->createApiResponse($data, 400);
+    }
+
+    /**
+     * @param $message
+     * @return JsonResponse
+     */
+    public function createNotFountErrorResponse($message)
+    {
+        $data = [
+            'type' => 'not_found_error',
+            'title' => 'Not Found',
+            'message' => $message
+        ];
+
+        return $this->createApiResponse($data, 404);
     }
 
     /**
@@ -39,5 +72,18 @@ abstract class BaseController extends Controller
         }
 
         return $errors;
+    }
+
+    /**
+     * @param Request $request
+     * @param FormInterface $form
+     */
+    public function processForm(Request $request, FormInterface $form)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $clearMissing = $request->getMethod() != 'PATCH';
+
+        $form->submit($data, $clearMissing);
     }
 }

@@ -3,7 +3,6 @@
 namespace AppBundle\Service;
 
 use \InvalidArgumentException;
-use \DateTime;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AppBundle\Entity\Book as BookEntity;
 
@@ -22,7 +21,13 @@ class Book extends Base
             return [];
         }
     }
-    public function getBookById($bookId)
+
+    /**
+     * @param $bookId
+     * @return mixed
+     * @throws \Exception
+     */
+    public function find($bookId)
     {
         try {
             if(empty($bookId)) {
@@ -38,6 +43,7 @@ class Book extends Base
                     'No book found for id '.$bookId
                 );
             }
+
             return $book;
         }
         catch (\Exception $ex) {
@@ -49,7 +55,7 @@ class Book extends Base
      * @param $book
      * @return array
      */
-    public function create($book)
+    public function persist($book)
     {
         $em = $this->getDoctrine()->getManager();
         $em->persist($book);
@@ -69,32 +75,7 @@ class Book extends Base
             'name' => $book->getName(),
             'price' => (float) $book->getPrice(),
             'description' => $book->getDescription(),
+            'isbn' => $book->getIsbn(),
         ];
-    }
-
-    public function setBook($bookData=null) {
-        try {
-            if(empty($bookData)) {
-                throw new NotFoundHttpException (
-                    'No book data found to save.'
-                );                            
-            }
-            
-            /** fill entity */
-            $book = new BookEntity();
-            $book->setTitle($bookData['title'])
-                    ->setPublishDate(new DateTime($bookData['publish_date']))
-                    ->setIsbn($bookData['isbn']);
-
-            /** save entity */
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($book);
-            $em->flush();
-
-            return $book;
-        }
-        catch (\Exception $ex) {
-            throw $ex;
-        }
     }
 }
