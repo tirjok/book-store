@@ -40,6 +40,7 @@ security:
             lexik_jwt: ~
 
     access_control:
-        - { path: ^/,          role: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/books/(\d+), role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/authors/(\d+), role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api,       role: IS_AUTHENTICATED_FULLY }
