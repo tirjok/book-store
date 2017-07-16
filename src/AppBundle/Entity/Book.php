@@ -200,16 +200,7 @@ class Book
      */
     public function setAuthor(Author $author)
     {
-        if ($this->author !== null) {
-            $this->author->removeBook($this);
-        }
-
-        if ($author !== null) {
-            $author->addBook($this);
-        }
-
         $this->author = $author;
-
         return $this;
     }
 

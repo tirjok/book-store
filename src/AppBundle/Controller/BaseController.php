@@ -84,14 +84,25 @@ abstract class BaseController extends Controller
      */
     public function processForm(Request $request, FormInterface $form)
     {
+        $data = $this->getRequestArray($request);
+
+        $clearMissing = $request->getMethod() != 'PATCH';
+
+        $form->submit($data, $clearMissing);
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function getRequestArray(Request $request)
+    {
         $data = json_decode($request->getContent(), true);
 
         if ($data === null) {
             throw new HttpException(400, 'Invalid JSON body!');
         }
 
-        $clearMissing = $request->getMethod() != 'PATCH';
-
-        $form->submit($data, $clearMissing);
+        return $data;
     }
 }

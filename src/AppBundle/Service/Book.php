@@ -65,12 +65,22 @@ class Book extends Base
      */
     public function bookSerializer($book)
     {
+        $authorService = $this->getContainer()->get('restapi.author');
+
         return [
             'book_id' => $book->getId(),
             'name' => $book->getName(),
             'price' => (float) $book->getPrice(),
             'description' => $book->getDescription(),
             'isbn' => $book->getIsbn(),
+            'author' => $authorService->authorSerializer($book->getAuthor())
         ];
+    }
+
+    public function persist($book)
+    {
+        $book->setAuthor($book->getAuthorId());
+
+        return parent::persist($book);
     }
 }
