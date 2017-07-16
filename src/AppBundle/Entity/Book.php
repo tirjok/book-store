@@ -62,6 +62,12 @@ class Book
      */
     private $author_id;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Author", inversedBy="books")
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
+     */
+    private $author;
+
 
     /**
      * Get id
@@ -186,5 +192,32 @@ class Book
     public function getAuthorId()
     {
         return $this->author_id;
+    }
+
+    /**
+     * @param Author $author
+     * @return $this
+     */
+    public function setAuthor(Author $author)
+    {
+        if ($this->author !== null) {
+            $this->author->removeBook($this);
+        }
+
+        if ($author !== null) {
+            $author->addBook($this);
+        }
+
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAuthor()
+    {
+        return $this->author;
     }
 }

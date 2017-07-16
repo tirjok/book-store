@@ -105,7 +105,7 @@ class BookController extends BaseController
     }
 
     /**
-     * @Route("/api/books/{id}")
+     * @Route("/api/books/{id}", name="api_books_delete")
      * @Method("DELETE")
      *
      * @param $id

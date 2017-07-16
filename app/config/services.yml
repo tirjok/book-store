@@ -11,3 +11,7 @@ services:
     restapi.book:
         class: AppBundle\Service\Book
         arguments: ['@service_container']
+
+    restapi.author:
+        class: AppBundle\Service\Author
+        arguments: ['@service_container']

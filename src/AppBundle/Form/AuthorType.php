@@ -2,26 +2,21 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\Author;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class BookType extends AbstractType
+class AuthorType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text')
-            ->add('price', 'text')
-            ->add('description', 'text')
-            ->add('isbn', 'text')
-            ->add('author_id', 'entity', [
-                'class' => Author::class
-            ])
-        ;
+        $builder->add('name')->add('email')->add('dob', DateType::class, [
+            'format' => 'yyyy-MM-dd',
+        ]);
     }
     
     /**
@@ -30,7 +25,7 @@ class BookType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Book',
+            'data_class' => 'AppBundle\Entity\Author',
             'csrf_protection' => false
         ));
     }
@@ -40,7 +35,7 @@ class BookType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_book';
+        return 'appbundle_author';
     }
 
 
