@@ -139,21 +139,8 @@ class Author
         return $this->birthday;
     }
 
-    public function addBook(Book $book)
+    public function getBooks()
     {
-        if (!$this->books->contains($book)) {
-            $this->books->add($book);
-        }
-
-        return $this;
-    }
-
-    public function removeJob(Book $book)
-    {
-        if ($this->books->contains($book)) {
-            $this->books->removeElement($book);
-        }
-
-        return $this;
+        return $this->books;
     }
 }

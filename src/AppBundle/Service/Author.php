@@ -26,18 +26,37 @@ class Author extends Base
         }
     }
 
+    protected function getAuthorBooks($author)
+    {
+        $bookService = $this->getContainer()->get('restapi.book');
+        $lists = [];
+
+        foreach ($author->getBooks() as $item) {
+            $lists[] = $bookService->bookSerializer($item, false);
+        }
+
+        return $lists;
+    }
+
     /**
      * @param $author
+     * @param bool $addBooks
      * @return array
      */
-    public function authorSerializer($author)
+    public function authorSerializer($author, $addBooks = true)
     {
-        return [
+        $data = [
             'author_id' => $author->getId(),
             'name' => $author->getName(),
             'email' => $author->getEmail(),
-            'birthday' => $author->getBirthday()
+            'birthday' => $author->getBirthday(),
         ];
+
+        if ($addBooks) {
+            $data['books'] = $this->getAuthorBooks($author);
+        }
+
+        return $data;
     }
 
     /**

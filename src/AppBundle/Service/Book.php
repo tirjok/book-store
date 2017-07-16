@@ -28,20 +28,26 @@ class Book extends Base
 
     /**
      * @param $book
+     * @param bool $addAuthor
      * @return array
      */
-    public function bookSerializer($book)
+    public function bookSerializer($book, $addAuthor = true)
     {
         $authorService = $this->getContainer()->get('restapi.author');
 
-        return [
+        $data =  [
             'book_id' => $book->getId(),
             'name' => $book->getName(),
             'price' => (float) $book->getPrice(),
             'description' => $book->getDescription(),
             'isbn' => $book->getIsbn(),
-            'author' => $authorService->authorSerializer($book->getAuthor())
         ];
+
+        if ($addAuthor) {
+            $data['author'] = $authorService->authorSerializer($book->getAuthor(), false);
+        }
+
+        return $data;
     }
 
     /**
