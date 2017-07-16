@@ -18,7 +18,10 @@ class AuthorController extends BaseController
      */
     public function indexAction()
     {
-        return $this->createApiResponse(['test' => 'komol']);
+        $authorService = $this->container->get('restapi.author');
+        $authors = $authorService->all();
+
+        return $this->createApiResponse(['authors' => $authors]);
     }
 
     /**

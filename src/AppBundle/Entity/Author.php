@@ -43,11 +43,12 @@ class Author
     private $email;
 
     /**
-     * @var \DateTime
+     * @var $birthday
      *
-     * @ORM\Column(name="dob", type="date", nullable=true)
+     * @ORM\Column(name="birthday", type="date", nullable=true)
+     * @Assert\Date()
      */
-    private $dob;
+    private $birthday;
 
     /**
      * @ORM\OneToMany(targetEntity="Book", mappedBy="author")
@@ -118,12 +119,12 @@ class Author
     /**
      * Set dob
      *
-     * @param \DateTime $dob
+     * @param DateType $birthday
      * @return Author
      */
-    public function setDob($dob)
+    public function setBirthday($birthday = null)
     {
-        $this->dob = $dob;
+        $this->birthday = new \DateTime($birthday);
 
         return $this;
     }
@@ -131,11 +132,11 @@ class Author
     /**
      * Get dob
      *
-     * @return \DateTime 
+     * @return $birthday
      */
-    public function getDob()
+    public function getBirthday()
     {
-        return $this->dob;
+        return $this->birthday;
     }
 
     public function addBook(Book $book)

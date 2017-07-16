@@ -2,9 +2,32 @@
 
 namespace AppBundle\Service;
 
+use AppBundle\Entity\Author as AuthorEntity;
 
 class Author extends Base
 {
+    /**
+     * @return array
+     */
+    public function all()
+    {
+        try {
+            $items =  $this->getDoctrine()
+                ->getRepository(AuthorEntity::class)
+                ->findAll();
+
+            $data = [];
+
+            foreach ($items as $item) {
+                $data[] = $this->authorSerializer($item);
+            }
+
+            return $data;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
     /**
      * @param $author
      * @return array
@@ -15,7 +38,7 @@ class Author extends Base
             'author_id' => $author->getId(),
             'name' => $author->getName(),
             'email' => $author->getEmail(),
-            'date_of_birth' => $author->getDob()
+            'birthday' => $author->getBirthday()
         ];
     }
 }
