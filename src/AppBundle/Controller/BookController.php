@@ -98,7 +98,7 @@ class BookController extends BaseController
         try {
             $book = $bookService->find($id);
         } catch (NotFoundHttpException $e) {
-            return $this->createNotFountErrorResponse('No book found with id ' . $id);
+            throw $this->createNotFoundException('No book found with id ' . $id);
         }
 
         return $this->createApiResponse($bookService->bookSerializer($book));
@@ -118,7 +118,7 @@ class BookController extends BaseController
         try {
             $book = $bookService->find($id);
         } catch (NotFoundHttpException $e) {
-            return $this->createNotFountErrorResponse('No book found with id ' . $id);
+            throw $this->createNotFoundException('No book found with id ' . $id);
         }
 
         $bookService->remove($book);

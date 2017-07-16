@@ -98,7 +98,7 @@ class AuthorController extends BaseController
         try {
             $author = $authorService->find($id);
         } catch (NotFoundHttpException $e) {
-            return $this->createNotFountErrorResponse('No author found with id ' . $id);
+            throw $this->createNotFoundException('No author found with id ' . $id);
         }
 
         return $this->createApiResponse($authorService->authorSerializer($author));
@@ -118,7 +118,7 @@ class AuthorController extends BaseController
         try {
             $author = $authorService->find($id);
         } catch (NotFoundHttpException $e) {
-            return $this->createNotFountErrorResponse('No author found with id ' . $id);
+            throw $this->createNotFoundException('No author found with id ' . $id);
         }
 
         $authorService->remove($author);
