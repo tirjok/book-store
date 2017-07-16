@@ -15,3 +15,9 @@ services:
     restapi.author:
         class: AppBundle\Service\Author
         arguments: ['@service_container']
+
+    api_exception_subscriber:
+        class: AppBundle\EventListener\ApiExceptionSubscriber
+        arguments: []
+        tags:
+            - { name: kernel.event_subscriber }

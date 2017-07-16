@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class AuthorController extends BaseController
 {
     /**
-     * @Route("/api/authors",name="api_authors")
+     * @Route("/authors",name="api_authors")
      * @Method("GET")
      */
     public function indexAction()
@@ -25,7 +25,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * @Route("/api/authors",name="api_authors_create")
+     * @Route("/authors",name="api_authors_create")
      * @Method("POST")
      *
      * @param Request $request
@@ -39,7 +39,7 @@ class AuthorController extends BaseController
         $this->processForm($request, $form);
 
         if (!$form->isValid()) {
-            return $this->createValidationErrorResponse($form);
+            $this->throwApiProblemValidationException($form);
         }
 
         $author = $authorService->persist($author);
@@ -55,7 +55,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * @Route("/api/authors/{id}",name="api_authors_update")
+     * @Route("/authors/{id}",name="api_authors_update")
      * @Method({"PUT", "PATCH"})
      *
      * @param $id
@@ -76,7 +76,7 @@ class AuthorController extends BaseController
         $this->processForm($request, $form);
 
         if (!$form->isValid()) {
-            return $this->createValidationErrorResponse($form);
+            $this->throwApiProblemValidationException($form);
         }
 
         $author = $authorService->persist($author);
@@ -85,7 +85,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * @Route("/api/authors/{id}",name="api_authors_show")
+     * @Route("/authors/{id}",name="api_authors_show")
      * @Method("GET")
      *
      * @param $id
@@ -105,7 +105,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * @Route("/api/authors/{id}", name="api_authors_delete")
+     * @Route("/authors/{id}", name="api_authors_delete")
      * @Method("DELETE")
      *
      * @param $id

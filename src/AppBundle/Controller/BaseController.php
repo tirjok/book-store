@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Api\ApiProblem;
+use AppBundle\Api\ApiProblemException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,13 +34,32 @@ abstract class BaseController extends Controller
     {
         $errors = $this->getErrorsFromForm($form);
 
-        $data = [
-            'type' => 'validation_error',
-            'title' => 'There was a validation error',
-            'errors' => $errors
-        ];
+        $apiProblem = new ApiProblem(
+            400,
+            ApiProblem::TYPE_VALIDATION_ERROR,
+            'There was a validation error'
+        );
 
-        return $this->createApiResponse($data, 400);
+        $apiProblem->set('errors', $errors);
+
+        throw new ApiProblemException($apiProblem);
+    }
+
+    /**
+     * @param FormInterface $form
+     */
+    public function throwApiProblemValidationException(FormInterface $form)
+    {
+        $errors = $this->getErrorsFromForm($form);
+
+        $apiProblem = new ApiProblem(
+            400,
+            ApiProblem::TYPE_VALIDATION_ERROR
+        );
+
+        $apiProblem->set('errors', $errors);
+
+        throw new ApiProblemException($apiProblem);
     }
 
     /**
@@ -100,7 +121,12 @@ abstract class BaseController extends Controller
         $data = json_decode($request->getContent(), true);
 
         if ($data === null) {
-            throw new HttpException(400, 'Invalid JSON body!');
+            $apiProblem = new ApiProblem(
+                400,
+                ApiProblem::TYPE_INVALID_REQUEST_BODY_FORMAT
+            );
+
+            throw new ApiProblemException($apiProblem);
         }
 
         return $data;

@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class BookController extends BaseController
 {
     /**
-     * @Route("/api/books",name="api_books")
+     * @Route("/books",name="api_books")
      * @Method("GET")
      */
     public function indexAction()
@@ -25,7 +25,7 @@ class BookController extends BaseController
     }
 
     /**
-     * @Route("/api/books",name="api_books_create")
+     * @Route("/books",name="api_books_create")
      * @Method("POST")
      *
      * @param Request $request
@@ -39,7 +39,7 @@ class BookController extends BaseController
         $this->processForm($request, $form);
 
         if (!$form->isValid()) {
-            return $this->createValidationErrorResponse($form);
+            $this->throwApiProblemValidationException($form);
         }
 
         $book = $bookService->persist($book);
@@ -55,7 +55,7 @@ class BookController extends BaseController
     }
 
     /**
-     * @Route("/api/books/{id}",name="api_books_update")
+     * @Route("/books/{id}",name="api_books_update")
      * @Method({"PUT", "PATCH"})
      *
      * @param $id
@@ -76,7 +76,7 @@ class BookController extends BaseController
         $this->processForm($request, $form);
 
         if (!$form->isValid()) {
-            return $this->createValidationErrorResponse($form);
+            $this->throwApiProblemValidationException($form);
         }
 
         $book = $bookService->persist($book);
@@ -85,7 +85,7 @@ class BookController extends BaseController
     }
 
     /**
-     * @Route("/api/books/{id}",name="api_books_show")
+     * @Route("/books/{id}",name="api_books_show")
      * @Method("GET")
      *
      * @param $id
@@ -105,7 +105,7 @@ class BookController extends BaseController
     }
 
     /**
-     * @Route("/api/books/{id}", name="api_books_delete")
+     * @Route("/books/{id}", name="api_books_delete")
      * @Method("DELETE")
      *
      * @param $id
