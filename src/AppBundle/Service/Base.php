@@ -2,13 +2,15 @@
 
 namespace AppBundle\Service;
 
+use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class Base
+abstract class Base
 {
     protected $container;
     protected $serializer;
@@ -17,6 +19,8 @@ class Base
         $this->container = $container;
         $this->serializer = null;
     }
+
+    abstract public function getEntity();
 
     protected function getContainer()
     {
@@ -76,4 +80,42 @@ class Base
         return $object;
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws \Exception
+     */
+    public function find($id)
+    {
+        try {
+            if(empty($id)) {
+                throw new InvalidArgumentException ("Book id can not be empty.");
+            }
+
+            $book = $this->getDoctrine()
+                ->getRepository($this->getEntity())
+                ->find($id);
+
+            if (!$book) {
+                throw new NotFoundHttpException (
+                    'No book found for id '.$id
+                );
+            }
+
+            return $book;
+        }
+        catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function findAll()
+    {
+        return  $this->getDoctrine()
+            ->getRepository($this->getEntity())
+            ->findAll();
+    }
 }

@@ -55,6 +55,36 @@ class AuthorController extends BaseController
     }
 
     /**
+     * @Route("/api/authors/{id}",name="api_authors_update")
+     * @Method({"PUT", "PATCH"})
+     *
+     * @param $id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateAction($id, Request $request)
+    {
+        $authorService = $this->container->get('restapi.author');
+
+        try {
+            $author = $authorService->find($id);
+        } catch (NotFoundHttpException $e) {
+            return $this->createNotFountErrorResponse('No author found with id ' . $id);
+        }
+
+        $form = $this->createForm(new AuthorType(), $author);
+        $this->processForm($request, $form);
+
+        if (!$form->isValid()) {
+            return $this->createValidationErrorResponse($form);
+        }
+
+        $author = $authorService->persist($author);
+
+        return $this->createApiResponse($authorService->authorSerializer($author));
+    }
+
+    /**
      * @Route("/api/authors/{id}",name="api_authors_show")
      * @Method("GET")
      *
@@ -72,5 +102,27 @@ class AuthorController extends BaseController
         }
 
         return $this->createApiResponse($authorService->authorSerializer($author));
+    }
+
+    /**
+     * @Route("/api/authors/{id}", name="api_authors_delete")
+     * @Method("DELETE")
+     *
+     * @param $id
+     * @return JsonResponse
+     */
+    public function deleteAction($id)
+    {
+        $authorService = $this->container->get('restapi.author');
+
+        try {
+            $author = $authorService->find($id);
+        } catch (NotFoundHttpException $e) {
+            return $this->createNotFountErrorResponse('No author found with id ' . $id);
+        }
+
+        $authorService->remove($author);
+
+        return $this->createApiResponse([], 204);
     }
 }

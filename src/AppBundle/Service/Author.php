@@ -12,9 +12,7 @@ class Author extends Base
     public function all()
     {
         try {
-            $items =  $this->getDoctrine()
-                ->getRepository(AuthorEntity::class)
-                ->findAll();
+            $items =  $this->findAll();
 
             $data = [];
 
@@ -40,5 +38,13 @@ class Author extends Base
             'email' => $author->getEmail(),
             'birthday' => $author->getBirthday()
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntity()
+    {
+        return AuthorEntity::class;
     }
 }
