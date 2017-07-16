@@ -1,7 +1,8 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\V1;
 
+use AppBundle\Controller\BaseController;
 use AppBundle\Entity\Author;
 use AppBundle\Form\AuthorType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

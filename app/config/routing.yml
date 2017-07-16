@@ -7,3 +7,9 @@ app:
 
 api_login_check:
     path: /api/login_check
+
+app_v2:
+   resource: '@AppBundle/Controller/V2'
+   prefix:   /api/v{version}
+   requirements:
+      version: '^2[\.0-9]*$'
