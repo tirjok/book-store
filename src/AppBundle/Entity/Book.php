@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Book
@@ -24,23 +25,48 @@ class Book
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Please enter a name")
      */
-    private $title;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="publishDate", type="date", nullable=true)
-     */
-    private $publishDate;
+    private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="isbn", type="string", length=64, unique=true)
+     * @ORM\Column(name="price", type="decimal", length=12)
+     * @Assert\NotBlank(message="Please enter price")
+     */
+    private $price;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank(message="Please enter some description")
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="isbn", type="string", length=100)
+     * @Assert\NotBlank(message="Please enter a ISBN")
      */
     private $isbn;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="author_id", type="integer")
+     * @Assert\NotBlank(message="Please select author")
+     */
+    private $author_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Author", inversedBy="books")
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
+     */
+    private $author;
 
 
     /**
@@ -54,49 +80,72 @@ class Book
     }
 
     /**
-     * Set title
+     * Set name
      *
-     * @param string $title
+     * @param string $name
      * @return Book
      */
-    public function setTitle($title)
+    public function setName($name)
     {
-        $this->title = $title;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get title
+     * Get name
      *
      * @return string 
      */
-    public function getTitle()
+    public function getName()
     {
-        return $this->title;
+        return $this->name;
     }
 
     /**
-     * Set publishDate
+     * Set price
      *
-     * @param \DateTime $publishDate
+     * @param string $price
      * @return Book
      */
-    public function setPublishDate(\DateTime $publishDate)
+    public function setPrice($price)
     {
-        $this->publishDate = $publishDate;
+        $this->price = $price;
 
         return $this;
     }
 
     /**
-     * Get publishDate
+     * Get price
      *
-     * @return \DateTime 
+     * @return string 
      */
-    public function getPublishDate()
+    public function getPrice()
     {
-        return $this->publishDate;
+        return $this->price;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Book
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -120,5 +169,46 @@ class Book
     public function getIsbn()
     {
         return $this->isbn;
+    }
+
+    /**
+     * Set author_id
+     *
+     * @param integer $authorId
+     * @return Book
+     */
+    public function setAuthorId($authorId)
+    {
+        $this->author_id = $authorId;
+
+        return $this;
+    }
+
+    /**
+     * Get author_id
+     *
+     * @return integer 
+     */
+    public function getAuthorId()
+    {
+        return $this->author_id;
+    }
+
+    /**
+     * @param Author $author
+     * @return $this
+     */
+    public function setAuthor(Author $author)
+    {
+        $this->author = $author;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAuthor()
+    {
+        return $this->author;
     }
 }

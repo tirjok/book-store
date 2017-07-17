@@ -2,9 +2,6 @@
 
 namespace AppBundle\Service;
 
-use \InvalidArgumentException;
-use \DateTime;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use AppBundle\Entity\Book as BookEntity;
 
 class Book extends Base
@@ -15,59 +12,60 @@ class Book extends Base
     public function all()
     {
         try {
-            return $this->getDoctrine()
-                ->getRepository(BookEntity::class)
-                ->fidAll();
+            $books =  $this->findAll();
+
+            $data = [];
+
+            foreach ($books as $book) {
+                $data[] = $this->bookSerializer($book);
+            }
+
+            return $data;
         } catch (\Exception $e) {
             return [];
         }
     }
-    public function getBookById($bookId)
-    {
-        try {
-            if(empty($bookId)) {
-                throw new InvalidArgumentException ("Book id can not be empty.");
-            }
-            
-            $book = $this->getDoctrine()
-                        ->getRepository(BookEntity::class)
-                        ->find($bookId);
 
-            if (!$book) {
-                throw new NotFoundHttpException (
-                    'No book found for id '.$bookId
-                );
-            }
-            return $book;
+    /**
+     * @param $book
+     * @param bool $addAuthor
+     * @return array
+     */
+    public function bookSerializer($book, $addAuthor = true)
+    {
+        $authorService = $this->getContainer()->get('restapi.author');
+
+        $data =  [
+            'book_id' => $book->getId(),
+            'name' => $book->getName(),
+            'price' => (float) $book->getPrice(),
+            'description' => $book->getDescription(),
+            'isbn' => $book->getIsbn(),
+        ];
+
+        if ($addAuthor) {
+            $data['author'] = $authorService->authorSerializer($book->getAuthor(), false);
         }
-        catch (\Exception $ex) {
-            throw $ex;
-        }
+
+        return $data;
     }
 
-    public function setBook($bookData=null) {
-        try {
-            if(empty($bookData)) {
-                throw new NotFoundHttpException (
-                    'No book data found to save.'
-                );                            
-            }
-            
-            /** fill entity */
-            $book = new BookEntity();
-            $book->setTitle($bookData['title'])
-                    ->setPublishDate(new DateTime($bookData['publish_date']))
-                    ->setIsbn($bookData['isbn']);
+    /**
+     * @param $book
+     * @return array
+     */
+    public function persist($book)
+    {
+        $book->setAuthor($book->getAuthorId());
 
-            /** save entity */
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($book);
-            $em->flush();
+        return parent::persist($book);
+    }
 
-            return $book;
-        }
-        catch (\Exception $ex) {
-            throw $ex;
-        }
+    /**
+     * @return string
+     */
+    public function getEntity()
+    {
+        return BookEntity::class;
     }
 }
