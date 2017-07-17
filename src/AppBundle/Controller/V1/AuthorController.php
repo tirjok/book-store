@@ -56,7 +56,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * @Route("/authors/{id}",name="api_authors_update")
+     * @Route("/authors/{id}",name="api_authors_update", requirements={"id": "\d+"})
      * @Method({"PUT", "PATCH"})
      *
      * @param $id
@@ -86,7 +86,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * @Route("/authors/{id}",name="api_authors_show")
+     * @Route("/authors/{id}",name="api_authors_show", requirements={"id": "\d+"})
      * @Method("GET")
      *
      * @param $id
@@ -106,7 +106,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * @Route("/authors/{id}", name="api_authors_delete")
+     * @Route("/authors/{id}", name="api_authors_delete", requirements={"id": "\d+"})
      * @Method("DELETE")
      *
      * @param $id

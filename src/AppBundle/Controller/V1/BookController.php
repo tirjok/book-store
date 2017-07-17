@@ -56,7 +56,7 @@ class BookController extends BaseController
     }
 
     /**
-     * @Route("/books/{id}",name="api_books_update")
+     * @Route("/books/{id}", name="api_books_update", requirements={"id": "\d+"})
      * @Method({"PUT", "PATCH"})
      *
      * @param $id
@@ -86,7 +86,7 @@ class BookController extends BaseController
     }
 
     /**
-     * @Route("/books/{id}",name="api_books_show")
+     * @Route("/books/{id}", name="api_books_show", requirements={"id": "\d+"})
      * @Method("GET")
      *
      * @param $id
@@ -106,7 +106,7 @@ class BookController extends BaseController
     }
 
     /**
-     * @Route("/books/{id}", name="api_books_delete")
+     * @Route("/books/{id}", name="api_books_delete", requirements={"id": "\d+"})
      * @Method("DELETE")
      *
      * @param $id
