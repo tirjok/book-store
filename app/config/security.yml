@@ -41,6 +41,6 @@ security:
 
     access_control:
         - { path: ^/api/login, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/books/(\d+), role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/authors/(\d+), role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v1/books/(\d+), role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v1/authors/(\d+), role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api,       role: IS_AUTHENTICATED_FULLY }
